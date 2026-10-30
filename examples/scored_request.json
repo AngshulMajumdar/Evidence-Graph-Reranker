@@ -1,0 +1,10 @@
+{
+  "query": "Who founded the company that released the Atlas device?",
+  "passages": [
+    {"id": "p0", "title": "Atlas device", "text": "The Atlas device was released by Novus Labs."},
+    {"id": "p1", "title": "Novus Labs", "text": "Novus Labs was founded by Mira Chen."},
+    {"id": "p2", "title": "Orion spacecraft", "text": "The Orion spacecraft is used in space missions."},
+    {"id": "p3", "title": "Electronics", "text": "Modern electronics are manufactured worldwide."}
+  ],
+  "scores": [0.95, 0.20, 0.52, 0.12]
+}

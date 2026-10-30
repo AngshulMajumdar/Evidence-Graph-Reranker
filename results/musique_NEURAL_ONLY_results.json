@@ -1,0 +1,34 @@
+{
+  "dataset": "musique",
+  "n": 300,
+  "original_embedding_checkpoint": "all-MiniLM-L6-v2, originally user uploaded",
+  "cross_encoder_checkpoint": "ms-marco-MiniLM-L6-v2, originally user uploaded",
+  "original_embedding_seconds": 86.82592989300065,
+  "protocol": "same 300 seeded MuSiQue queries and 20 candidate passages as previous run. No TF-IDF in either ranking or selection; cross scores reused exactly from pretrained model inference. Fixed graph parameters .4 relevance + .5 directed linkage + .2 query-title match (scores min-max normalized per query). Gold is only used in evaluation.",
+  "coverage": {
+    "original_minilm_cosine": {
+      "2": 9.67,
+      "3": 16.0,
+      "5": 31.0,
+      "8": 44.0
+    },
+    "msmarco_crossencoder": {
+      "2": 11.33,
+      "3": 19.33,
+      "5": 30.67,
+      "8": 44.33
+    },
+    "original_minilm_graph": {
+      "2": 16.33,
+      "3": 25.0,
+      "5": 43.67,
+      "8": 58.67
+    },
+    "msmarco_graph": {
+      "2": 17.67,
+      "3": 27.0,
+      "5": 42.33,
+      "8": 57.67
+    }
+  }
+}

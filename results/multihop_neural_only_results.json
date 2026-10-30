@@ -1,0 +1,73 @@
+{
+  "dataset": "multihop",
+  "questions": 300,
+  "candidate_count_total": 6000,
+  "candidate_pool": "Top-20 neural MiniLM retrieval from full 609-article corpus (no gold insertion)",
+  "gold_support_count_distribution": {
+    "3": 96,
+    "2": 158,
+    "4": 46
+  },
+  "gold_available_fraction": 51.67,
+  "gold_available_count": 155,
+  "graph_link_fraction": 4.0,
+  "oracle_complete_coverage_pct": {
+    "2": 35.0,
+    "3": 48.0,
+    "5": 51.67,
+    "8": 51.67
+  },
+  "complete_coverage_pct": {
+    "dense_cosine": {
+      "2": 6.0,
+      "3": 11.67,
+      "5": 21.67,
+      "8": 31.67
+    },
+    "crossencoder": {
+      "2": 7.0,
+      "3": 13.67,
+      "5": 23.0,
+      "8": 36.67
+    },
+    "dense_graph": {
+      "2": 6.0,
+      "3": 11.67,
+      "5": 22.33,
+      "8": 32.33
+    },
+    "crossencoder_graph": {
+      "2": 7.67,
+      "3": 13.67,
+      "5": 26.0,
+      "8": 36.67
+    }
+  },
+  "crossencoder_graph_minus_crossencoder_at3_pp": 0.0,
+  "ci95_pp": [
+    -1.33,
+    1.33
+  ],
+  "paired_wins_losses_ties_at3": {
+    "wins": 2,
+    "losses": 2,
+    "ties": 296
+  },
+  "timing_seconds": {
+    "index_seconds": 8.61646041700078,
+    "query_embedding_seconds": 2.9061220870007674,
+    "total_prep_seconds": 11.600812000000587,
+    "index_size": 609,
+    "candidate_pool_size": 20,
+    "crossencoder_scoring_seconds": 190.511,
+    "crossencoder_scoring_ms_per_question": 635.04,
+    "crossencoder_forward_seconds": 176.907,
+    "graph_selection_total_s": 2.271,
+    "graph_selection_ms_per_question": 7.57
+  },
+  "models": {
+    "dense": "user uploaded all-MiniLM-L6-v2",
+    "crossencoder": "user uploaded cross-encoder/ms-marco-MiniLM-L6-v2"
+  },
+  "protocol": "MiniLM embeddings at max 128 WordPiece for dense. Cross-encoder truncates paired query+passage at 256 WordPiece. Both score exact same candidate pools. Fixed evidence graph .4 minmax relevance + .5 title in already-selected passage + .2 query-title score. No TF-IDF anywhere in candidate construction or scoring. Gold used solely for pool audit and evaluation."
+}

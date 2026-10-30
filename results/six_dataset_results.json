@@ -1,0 +1,411 @@
+{
+  "rule": {
+    "relevance": 0.4,
+    "directed_link": 0.5,
+    "query_title_match": 0.2,
+    "score_normalization": "per-query min-max",
+    "selection": "greedy",
+    "gold_used_in_selection": false
+  },
+  "results": {
+    "HotpotQA": {
+      "dataset": "hotpot",
+      "questions": 600,
+      "candidate_count_per_question": 10,
+      "selection_rule": "same neural_evidence_graph_core.graph_arrays and graph_select as four new datasets: 0.4 * per-query minmax relevance + 0.5 * max selected-to-candidate directed title-body link + 0.2 * query-title match; no tuning, no query facets, no specialized presets",
+      "embedding_source": "previously frozen/precomputed actual all-MiniLM-L6-v2 q and passage vectors; cosine recomputed",
+      "crossencoder_source": "previously frozen/precomputed actual pretrained ms-marco-MiniLM-L6-v2 256-wordpiece query-passage logits, same ids",
+      "complete_evidence_coverage_pct": {
+        "dense_cosine": {
+          "2": 33.5,
+          "3": 50.67,
+          "5": 68.0,
+          "8": 85.67
+        },
+        "crossencoder": {
+          "2": 45.83,
+          "3": 60.83,
+          "5": 74.67,
+          "8": 86.83
+        },
+        "dense_graph": {
+          "2": 61.67,
+          "3": 74.83,
+          "5": 84.83,
+          "8": 94.17
+        },
+        "crossencoder_graph": {
+          "2": 67.17,
+          "3": 80.5,
+          "5": 89.83,
+          "8": 95.5
+        }
+      },
+      "crossencoder_graph_vs_crossencoder_at3": {
+        "diff_pp": 19.67,
+        "ci95_pp": [
+          16.17,
+          23.33
+        ],
+        "wins": 135,
+        "losses": 17,
+        "ties": 448
+      },
+      "dense_graph_vs_dense_at3": {
+        "diff_pp": 24.17,
+        "ci95_pp": [
+          20.33,
+          28.17
+        ],
+        "wins": 163,
+        "losses": 18,
+        "ties": 419
+      },
+      "graph_link_present_pct": 87.83,
+      "gold_support_count_distribution": {
+        "2": 600
+      },
+      "timing": {
+        "graph_feature_extraction_and_four_rankings_ms_per_question": 0.406,
+        "graph_feature_extraction_and_four_rankings_total_s": 0.2437,
+        "pretrained_crossencoder_scoring_ms_per_question_from_original_inference_run": 272.18,
+        "cached_embedding_and_crossencoder_scores": true
+      },
+      "note": "This is an actual rerun of ranking/selection and evidence coverage from cached neural scores; scoring step was previously executed, not repeated. Scores are on the same selected 600 held-out question IDs."
+    },
+    "2WikiMultiHopQA": {
+      "dataset": "wiki",
+      "questions": 600,
+      "candidate_count_per_question": 10,
+      "selection_rule": "same neural_evidence_graph_core.graph_arrays and graph_select as four new datasets: 0.4 * per-query minmax relevance + 0.5 * max selected-to-candidate directed title-body link + 0.2 * query-title match; no tuning, no query facets, no specialized presets",
+      "embedding_source": "previously frozen/precomputed actual all-MiniLM-L6-v2 q and passage vectors; cosine recomputed",
+      "crossencoder_source": "previously frozen/precomputed actual pretrained ms-marco-MiniLM-L6-v2 256-wordpiece query-passage logits, same ids",
+      "complete_evidence_coverage_pct": {
+        "dense_cosine": {
+          "2": 24.83,
+          "3": 34.17,
+          "5": 52.33,
+          "8": 81.5
+        },
+        "crossencoder": {
+          "2": 33.83,
+          "3": 44.5,
+          "5": 58.67,
+          "8": 79.33
+        },
+        "dense_graph": {
+          "2": 61.5,
+          "3": 68.33,
+          "5": 93.0,
+          "8": 98.33
+        },
+        "crossencoder_graph": {
+          "2": 62.83,
+          "3": 70.17,
+          "5": 93.17,
+          "8": 98.17
+        }
+      },
+      "crossencoder_graph_vs_crossencoder_at3": {
+        "diff_pp": 25.67,
+        "ci95_pp": [
+          22.17,
+          29.33
+        ],
+        "wins": 159,
+        "losses": 5,
+        "ties": 436
+      },
+      "dense_graph_vs_dense_at3": {
+        "diff_pp": 34.17,
+        "ci95_pp": [
+          30.0,
+          38.0
+        ],
+        "wins": 209,
+        "losses": 4,
+        "ties": 387
+      },
+      "graph_link_present_pct": 81.67,
+      "gold_support_count_distribution": {
+        "2": 459,
+        "4": 141
+      },
+      "timing": {
+        "graph_feature_extraction_and_four_rankings_ms_per_question": 0.322,
+        "graph_feature_extraction_and_four_rankings_total_s": 0.1933,
+        "pretrained_crossencoder_scoring_ms_per_question_from_original_inference_run": 254.92,
+        "cached_embedding_and_crossencoder_scores": true
+      },
+      "note": "This is an actual rerun of ranking/selection and evidence coverage from cached neural scores; scoring step was previously executed, not repeated. Scores are on the same selected 600 held-out question IDs."
+    },
+    "MuSiQue": {
+      "dataset": "MuSiQue",
+      "questions": 300,
+      "gold_available_fraction": 100,
+      "oracle_complete_coverage_pct": {
+        "2": 51.67,
+        "3": 87,
+        "5": 100,
+        "8": 100
+      },
+      "complete_coverage_pct": {
+        "dense_cosine": {
+          "2": 9.67,
+          "3": 16.0,
+          "5": 31.0,
+          "8": 44.0
+        },
+        "crossencoder": {
+          "2": 11.33,
+          "3": 19.33,
+          "5": 30.67,
+          "8": 44.33
+        },
+        "dense_graph": {
+          "2": 16.33,
+          "3": 25.0,
+          "5": 43.67,
+          "8": 58.67
+        },
+        "crossencoder_graph": {
+          "2": 17.67,
+          "3": 27.0,
+          "5": 42.33,
+          "8": 57.67
+        }
+      },
+      "timing_seconds": {
+        "embedding_seconds": 86.82592989300065,
+        "crossencoder_scoring_seconds": 161.59981333699943,
+        "graph_selection_ms_per_question": 0.6617960400035372,
+        "crossencoder_scoring_ms_per_question": 538.6660444566648,
+        "candidate_pool_size": 20
+      },
+      "crossencoder_graph_minus_crossencoder_at3_pp": 7.67,
+      "ci95_pp": [
+        3.33,
+        12.0
+      ],
+      "candidate_pool": "Native ~20 annotated MuSiQue passages; all gold included"
+    },
+    "HoVer": {
+      "dataset": "hover",
+      "questions": 300,
+      "candidate_count_total": 3000,
+      "candidate_pool": "10 HotpotQA distractor passages, only HoVer claims with all support titles present",
+      "gold_support_count_distribution": {
+        "2": 152,
+        "3": 144,
+        "4": 4
+      },
+      "gold_available_fraction": 100.0,
+      "gold_available_count": 300,
+      "graph_link_fraction": 94.33,
+      "oracle_complete_coverage_pct": {
+        "2": 50.67,
+        "3": 98.67,
+        "5": 100.0,
+        "8": 100.0
+      },
+      "complete_coverage_pct": {
+        "dense_cosine": {
+          "2": 26.33,
+          "3": 47.33,
+          "5": 75.67,
+          "8": 92.0
+        },
+        "crossencoder": {
+          "2": 33.0,
+          "3": 57.0,
+          "5": 82.0,
+          "8": 92.33
+        },
+        "dense_graph": {
+          "2": 32.33,
+          "3": 73.33,
+          "5": 89.33,
+          "8": 97.33
+        },
+        "crossencoder_graph": {
+          "2": 38.33,
+          "3": 72.67,
+          "5": 92.33,
+          "8": 98.67
+        }
+      },
+      "crossencoder_graph_minus_crossencoder_at3_pp": 15.67,
+      "ci95_pp": [
+        9.99,
+        22.0
+      ],
+      "paired_wins_losses_ties_at3": {
+        "wins": 70,
+        "losses": 23,
+        "ties": 207
+      },
+      "timing_seconds": {
+        "embedding_seconds": 45.51700891600012,
+        "prep_seconds": 45.92742176499996,
+        "candidate_pool_size": 10,
+        "eligibility": "HoVer dev claims with HotpotQA dev passages available and all annotated support titles present; conditional subset",
+        "crossencoder_scoring_seconds": 84.113,
+        "crossencoder_scoring_ms_per_question": 280.38,
+        "crossencoder_forward_seconds": 83.542,
+        "graph_selection_total_s": 0.11,
+        "graph_selection_ms_per_question": 0.37
+      },
+      "models": {
+        "dense": "user uploaded all-MiniLM-L6-v2",
+        "crossencoder": "user uploaded cross-encoder/ms-marco-MiniLM-L6-v2"
+      },
+      "protocol": "MiniLM embeddings at max 128 WordPiece for dense. Cross-encoder truncates paired query+passage at 256 WordPiece. Both score exact same candidate pools. Fixed evidence graph .4 minmax relevance + .5 title in already-selected passage + .2 query-title score. No TF-IDF anywhere in candidate construction or scoring. Gold used solely for pool audit and evaluation."
+    },
+    "MultiHop-RAG": {
+      "dataset": "multihop",
+      "questions": 300,
+      "candidate_count_total": 6000,
+      "candidate_pool": "Top-20 neural MiniLM retrieval from full 609-article corpus (no gold insertion)",
+      "gold_support_count_distribution": {
+        "3": 96,
+        "2": 158,
+        "4": 46
+      },
+      "gold_available_fraction": 51.67,
+      "gold_available_count": 155,
+      "graph_link_fraction": 4.0,
+      "oracle_complete_coverage_pct": {
+        "2": 35.0,
+        "3": 48.0,
+        "5": 51.67,
+        "8": 51.67
+      },
+      "complete_coverage_pct": {
+        "dense_cosine": {
+          "2": 6.0,
+          "3": 11.67,
+          "5": 21.67,
+          "8": 31.67
+        },
+        "crossencoder": {
+          "2": 7.0,
+          "3": 13.67,
+          "5": 23.0,
+          "8": 36.67
+        },
+        "dense_graph": {
+          "2": 6.0,
+          "3": 11.67,
+          "5": 22.33,
+          "8": 32.33
+        },
+        "crossencoder_graph": {
+          "2": 7.67,
+          "3": 13.67,
+          "5": 26.0,
+          "8": 36.67
+        }
+      },
+      "crossencoder_graph_minus_crossencoder_at3_pp": 0.0,
+      "ci95_pp": [
+        -1.33,
+        1.33
+      ],
+      "paired_wins_losses_ties_at3": {
+        "wins": 2,
+        "losses": 2,
+        "ties": 296
+      },
+      "timing_seconds": {
+        "index_seconds": 8.61646041700078,
+        "query_embedding_seconds": 2.9061220870007674,
+        "total_prep_seconds": 11.600812000000587,
+        "index_size": 609,
+        "candidate_pool_size": 20,
+        "crossencoder_scoring_seconds": 190.511,
+        "crossencoder_scoring_ms_per_question": 635.04,
+        "crossencoder_forward_seconds": 176.907,
+        "graph_selection_total_s": 2.271,
+        "graph_selection_ms_per_question": 7.57
+      },
+      "models": {
+        "dense": "user uploaded all-MiniLM-L6-v2",
+        "crossencoder": "user uploaded cross-encoder/ms-marco-MiniLM-L6-v2"
+      },
+      "protocol": "MiniLM embeddings at max 128 WordPiece for dense. Cross-encoder truncates paired query+passage at 256 WordPiece. Both score exact same candidate pools. Fixed evidence graph .4 minmax relevance + .5 title in already-selected passage + .2 query-title score. No TF-IDF anywhere in candidate construction or scoring. Gold used solely for pool audit and evaluation."
+    },
+    "QASC": {
+      "dataset": "qasc_neural_retrieval",
+      "questions": 300,
+      "candidate_count_total": 6000,
+      "candidate_pool": "Top-20 MiniLM from all unique QASC supporting fact sentences, without gold insertion",
+      "gold_support_count_distribution": {
+        "2": 300
+      },
+      "gold_available_fraction": 31.33,
+      "gold_available_count": 94,
+      "graph_link_fraction": 0.0,
+      "oracle_complete_coverage_pct": {
+        "2": 31.33,
+        "3": 31.33,
+        "5": 31.33,
+        "8": 31.33
+      },
+      "complete_coverage_pct": {
+        "dense_cosine": {
+          "2": 3.33,
+          "3": 5.33,
+          "5": 10.33,
+          "8": 16.0
+        },
+        "crossencoder": {
+          "2": 7.33,
+          "3": 13.0,
+          "5": 17.67,
+          "8": 24.33
+        },
+        "dense_graph": {
+          "2": 3.33,
+          "3": 5.33,
+          "5": 10.33,
+          "8": 16.0
+        },
+        "crossencoder_graph": {
+          "2": 7.33,
+          "3": 13.0,
+          "5": 17.67,
+          "8": 24.33
+        }
+      },
+      "crossencoder_graph_minus_crossencoder_at3_pp": 0.0,
+      "ci95_pp": [
+        0.0,
+        0.0
+      ],
+      "paired_wins_losses_ties_at3": {
+        "wins": 0,
+        "losses": 0,
+        "ties": 300
+      },
+      "timing_seconds": {
+        "index_seconds": 17.435790640998675,
+        "query_embedding_seconds": 0.6626583439992828,
+        "total_prep_seconds": 18.42298589100028,
+        "fact_corpus_size": 6878,
+        "eligible_questions": 8134,
+        "candidate_pool_size": 20,
+        "crossencoder_scoring_seconds": 20.737,
+        "crossencoder_scoring_ms_per_question": 69.12,
+        "crossencoder_forward_seconds": 20.519,
+        "graph_selection_total_s": 0.103,
+        "graph_selection_ms_per_question": 0.34
+      },
+      "models": {
+        "dense": "user uploaded all-MiniLM-L6-v2",
+        "crossencoder": "user uploaded cross-encoder/ms-marco-MiniLM-L6-v2"
+      },
+      "protocol": "MiniLM embeddings at max 128 WordPiece for dense. Cross-encoder truncates paired query+passage at 256 WordPiece. Both score exact same candidate pools. Fixed evidence graph .4 minmax relevance + .5 title in already-selected passage + .2 query-title score. No TF-IDF anywhere in candidate construction or scoring. Gold used solely for pool audit and evaluation."
+    }
+  },
+  "timing_notes": "Crossencoder model scoring excludes query retrieval and answer generation; selection-only numbers exclude neural inference. The first two reused prior neural results on identical held-out samples."
+}

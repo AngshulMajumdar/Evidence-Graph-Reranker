@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Evidence Graph Reranker — Assemble Evidence, Not Just Rankings</title>
+<meta name="description" content="One fixed training-free evidence graph reranker. Six multi-hop benchmarks, four improvements, two ties. Open-source Python code and Hugging Face demo."/>
+<meta property="og:title" content="Evidence Graph Reranker: Stop Ranking Passages. Start Assembling Evidence."/>
+<meta property="og:description" content="Multi-hop RAG evidence selection with one unified algorithm across six benchmarks."/>
+<meta property="og:type" content="article"/>
+<meta property="og:image" content="images/01-pipeline.png"/>
+<link rel="stylesheet" href="styles.css"/>
+</head><body>
+<header class="site"><nav><a class="brand" href="index.html">◈ Evidence Graph Reranker</a><div class="menu"><a href="#problem">Problem</a><a href="#method">Method</a><a href="#benchmarks">Results</a><a href="#limitations">Limitations</a><a href="#usage">Get started</a></div></nav></header>
+<section class="hero"><div class="overline">Multi-hop retrieval · Open-source research</div>
+<h1>Stop ranking passages.<br/><span>Start assembling evidence.</span></h1>
+<p class="sub">A training-free, query-conditioned evidence graph reranker that makes passage selection about the full reasoning chain.</p>
+<div class="pillrow"><span class="pill">6 benchmarks</span><span class="pill">4 improvements</span><span class="pill">2 ties</span><span class="pill">0 regressions @3</span></div>
+<a class="cta" href="https://huggingface.co/spaces/Angshul/Evidence-Graph-Reranker">Try on Hugging Face ↗</a>
+<a class="cta secondary" href="https://github.com/AngshulMajumdar/Evidence-Graph-Reranker">Get the code ↗</a>
+</section><main><article><p>A passage can be highly relevant to a question and still be a poor addition to the evidence a language model receives. That sounds contradictory until you consider a multi-hop question: we need an <strong>entire chain</strong>, not another paragraph that repeats the first step.</p>
+<p>Our Evidence Graph Reranker takes the candidate passages from an existing retriever and builds a small, query-conditioned graph from their titles and text. Instead of selecting the highest individual relevance scores, it greedily assembles a complementary set. It uses pretrained neural relevance scores without training a new model.</p>
+<figure><img src="images/01-pipeline.png" alt="The full retrieval and reranking pipeline" loading="eager"/><figcaption>Figure 1. The reranker sits <strong>after</strong> an existing retriever and neural scorer. It does not replace either one.</figcaption></figure>
+<h2 id="problem">The problem: relevance is not the same thing as sufficient evidence</h2>
+<p>Imagine asking: <strong>Who is the spouse of the musician who performed on <em>Green</em>?</strong> One passage identifies the musician; another names the spouse. A conventional reranker may spend its three slots on passages about the album, performer, and band—highly relevant individually, but missing the spouse relationship. A complementary subset must preserve both hops.</p>
+<p>The failure mode is not that the neural scorer is wrong. It is that <strong>ranking the elements independently need not yield the best set</strong>. Even a strong pairwise cross-encoder has no explicit representation of which passages were already selected.</p>
+<figure><img src="images/02-why-subsets.png" alt="Independent ranking versus complementary evidence" loading="lazy"/><figcaption>Figure 2. Illustrative evidence chains show why repeatedly choosing individually relevant passages may leave a reasoning hop unsupported.</figcaption></figure>
+<h2 id="method">What we built: a graph-aware selector, not another pretrained checkpoint</h2>
+<p>The released algorithm accepts a query, candidate passages (optionally with titles), and one neural relevance score per passage. For each candidate, it computes three interpretable signals:</p>
+<ol>
+<li><strong>Neural relevance.</strong> A pretrained MS MARCO MiniLM cross-encoder, MiniLM dense model, or your existing neural scorer provides a query–passage score. These scores are normalized within the query's candidate pool.</li>
+<li><strong>Directed passage link.</strong> If the title of candidate passage B occurs in the body of already selected passage A, that creates an A → B link.</li>
+<li><strong>Query–title match.</strong> An exact title mentioned in the query gets the strongest title signal; otherwise partial word overlap provides a smaller one.</li>
+</ol>
+<p>At each greedy step, the selector uses one fixed rule:</p>
+<p><strong>Selection score = 0.4 × normalized neural relevance + 0.5 × directed link + 0.2 × query–title match.</strong></p>
+<p>It picks the best remaining passage, adds it to the selected set, and repeats until the desired passage budget is reached. No dataset-specific hyperparameters, no fine-tuning, and no gold-label information is used to select passages.</p>
+<figure><img src="images/03-how-it-works.png" alt="Three stages of graph-aware selection" loading="lazy"/><figcaption>Figure 3. The same fixed scoring rule is applied to every evaluated dataset.</figcaption></figure>
+<h2 id="benchmarks">Six benchmarks, one algorithm</h2>
+<p>We evaluated <strong>complete supporting-evidence coverage at three selected passages</strong>. A question counts as successful only if <strong>every required annotated supporting passage</strong> appears in the selected set. This is stricter than retrieving just one relevant document, but it is <strong>not</strong> the same as measuring generated-answer accuracy.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+  <th>Benchmark</th>
+  <th style="text-align:right">Questions</th>
+  <th style="text-align:right">MS MARCO @3</th>
+  <th style="text-align:right">MS MARCO + graph @3</th>
+  <th style="text-align:right">Gain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>HotpotQA</td>
+  <td style="text-align:right">600</td>
+  <td style="text-align:right">60.83%</td>
+  <td style="text-align:right"><strong>80.50%</strong></td>
+  <td style="text-align:right"><strong>+19.67 pp</strong></td>
+</tr>
+<tr>
+  <td>2WikiMultiHopQA</td>
+  <td style="text-align:right">600</td>
+  <td style="text-align:right">44.50%</td>
+  <td style="text-align:right"><strong>70.17%</strong></td>
+  <td style="text-align:right"><strong>+25.67 pp</strong></td>
+</tr>
+<tr>
+  <td>HoVer</td>
+  <td style="text-align:right">300</td>
+  <td style="text-align:right">57.00%</td>
+  <td style="text-align:right"><strong>72.67%</strong></td>
+  <td style="text-align:right"><strong>+15.67 pp</strong></td>
+</tr>
+<tr>
+  <td>MuSiQue</td>
+  <td style="text-align:right">300</td>
+  <td style="text-align:right">19.33%</td>
+  <td style="text-align:right"><strong>27.00%</strong></td>
+  <td style="text-align:right"><strong>+7.67 pp</strong></td>
+</tr>
+<tr>
+  <td>MultiHop-RAG</td>
+  <td style="text-align:right">300</td>
+  <td style="text-align:right">13.67%</td>
+  <td style="text-align:right">13.67%</td>
+  <td style="text-align:right">0.00 pp</td>
+</tr>
+<tr>
+  <td>QASC</td>
+  <td style="text-align:right">300</td>
+  <td style="text-align:right">13.00%</td>
+  <td style="text-align:right">13.00%</td>
+  <td style="text-align:right">0.00 pp</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Four improvements. Two ties. No regressions at k = 3.</strong> Importantly, these are <em>six differently constructed benchmark candidate pools</em>—not one homogeneous end-to-end retrieval leaderboard. The results should be interpreted within each experiment's setting.</p>
+<figure><img src="images/04-six-benchmarks.png" alt="Unified benchmark results at three passages" loading="lazy"/><figcaption>Figure 4. Complete evidence coverage at a three-passage budget, using the pretrained MS MARCO cross-encoder as the common passage scorer.</figcaption></figure>
+<p>The strongest gains come on HotpotQA and 2WikiMultiHopQA, where titles and cross-document references provide useful links. HoVer also improves, but that evaluation uses a <strong>restricted matched subset</strong> whose gold evidence can be located in the available passages. MuSiQue improves more modestly.</p>
+<p>For HotpotQA and 2Wiki, the unified algorithm was rerun against <strong>cached genuine neural scores</strong> rather than running the Transformer forward passes again; those previously computed model outputs remain the neural basis for the rerank. The later four experiments also use genuine neural scoring, not TF-IDF.</p>
+<h2 id="limitations">The failures are part of the lesson</h2>
+<p>On <strong>MultiHop-RAG</strong>, the retrieved news articles had few explicit title references across the candidate pool. At three passages, the graph rule tied the cross-encoder; at five passages it showed a small improvement. On <strong>QASC</strong>, the candidates were untitled science facts, so the link and title signals were absent and our algorithm reduced to the original neural ranking.</p>
+<p>This is a real limitation, not a footnote to hide. <strong>A title-reference graph cannot manufacture connections that are not explicit in the candidate text.</strong> We intentionally have not inserted semantic-graph features into this release, because that would make it a different algorithm from the one benchmarked.</p>
+<figure><img src="images/05-strengths-and-limits.png" alt="Where title-reference evidence graphs help and where they tie" loading="lazy"/><figcaption>Figure 5. The method is particularly helpful in collections with meaningful article titles and explicit inter-document references.</figcaption></figure>
+<h2 id="speed">Light graph operations, but let's count the full pipeline honestly</h2>
+<p>After a model has scored the candidate passages, graph construction and greedy selection are inexpensive on a CPU. The recorded graph-stage times range roughly from <strong>0.3 to 7.6 ms/question</strong> across the reported experiments, whereas the separately measured MS MARCO cross-encoder stage took roughly <strong>69–635 ms/question</strong>, depending on the pool and experiment.</p>
+<p>That is <strong>not a claim that our full reranker is hundreds of times faster than the cross-encoder</strong>. The graph selector uses neural relevance as input and therefore incurs that scoring cost unless scores are already cached. The CPU timing environments also differ across benchmarks. The real operational advantage is that graph selection adds a relatively small post-processing step to an existing neural scoring pipeline.</p>
+<figure><img src="images/06-quality-and-efficiency.png" alt="The cost of neural relevance scoring and subsequent graph selection" loading="lazy"/><figcaption>Figure 6. Graph-stage and neural-stage measurements are shown separately; they must not be compared as two complete end-to-end systems.</figcaption></figure>
+<h2 id="usage">Use it in your own RAG pipeline</h2>
+<p>The code is available as an installable Python package, a command-line program, and a Gradio demo. The simplest integration requires only your existing relevance scores:</p>
+<pre><code class="language-python">from evidence_graph_reranker import rank_with_scores
+
+selected = rank_with_scores(
+    query=&quot;Who founded the company that released the Atlas device?&quot;,
+    passages=[
+        {&quot;title&quot;: &quot;Atlas device&quot;, &quot;text&quot;: &quot;Atlas was released by Novus Labs.&quot;},
+        {&quot;title&quot;: &quot;Novus Labs&quot;, &quot;text&quot;: &quot;Novus Labs was founded by Mira Chen.&quot;},
+        {&quot;title&quot;: &quot;Unrelated&quot;, &quot;text&quot;: &quot;Another product was launched elsewhere.&quot;},
+    ],
+    scores=[0.9, 0.15, 0.4],
+    k=2,
+)
+print([(item[&quot;index&quot;], item[&quot;title&quot;]) for item in selected])
+</code></pre>
+<p>For neural inference directly, use <code>EvidenceGraphReranker(backend=&quot;cross-encoder&quot;)</code>. This loads the official pretrained MS MARCO MiniLM scorer on first use; the graph selection rule remains the same. The repository has tests, example candidate files, JSON command-line input, and reproducibility records.</p>
+<p>Try the public <a href="https://huggingface.co/spaces/Angshul/Evidence-Graph-Reranker">Hugging Face Space</a> or read <a href="https://github.com/AngshulMajumdar/Evidence-Graph-Reranker/blob/main/INSTALL.md">installation instructions</a>. The code does not ship third-party checkpoint weights or datasets.</p>
+<h2 id="takeaway">The takeaway</h2>
+<p><strong>Retrieval supplies candidate facts. Neural reranking scores their relevance. Evidence-graph selection asks whether the selected passages together contain the complete reasoning chain.</strong> Those are different tasks, and treating them as different tasks can produce a substantial improvement without training another model.</p>
+<p>The limitations matter just as much: this version exploits explicit title references, some tests are conditional on gold-containing candidate pools, and we have <strong>not measured generated answers or hallucination reduction</strong>. The released six-benchmark evaluation documents those constraints rather than hiding them.</p>
+<p><em>Project: Evidence Graph Reranker · Author: Angshul Majumdar · Source: <a href="https://huggingface.co/spaces/Angshul/Evidence-Graph-Reranker">Hugging Face Space</a> · Evaluation details: <a href="https://github.com/AngshulMajumdar/Evidence-Graph-Reranker/blob/main/results/methodology.md">results/methodology.md</a>.</em></p>
+</article></main>
+<footer class="bottom">Evidence Graph Reranker · Angshul Majumdar · <a href="https://huggingface.co/spaces/Angshul/Evidence-Graph-Reranker">Live Space</a> · <a href="https://github.com/AngshulMajumdar/Evidence-Graph-Reranker/blob/main/INSTALL.md">Install</a> · <a href="https://github.com/AngshulMajumdar/Evidence-Graph-Reranker/blob/main/results/methodology.md">Methodology</a></footer>
+</body></html>

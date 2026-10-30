@@ -1,0 +1,66 @@
+{
+  "dataset": "wiki",
+  "questions": 600,
+  "candidate_count_per_question": 10,
+  "selection_rule": "same neural_evidence_graph_core.graph_arrays and graph_select as four new datasets: 0.4 * per-query minmax relevance + 0.5 * max selected-to-candidate directed title-body link + 0.2 * query-title match; no tuning, no query facets, no specialized presets",
+  "embedding_source": "previously frozen/precomputed actual all-MiniLM-L6-v2 q and passage vectors; cosine recomputed",
+  "crossencoder_source": "previously frozen/precomputed actual pretrained ms-marco-MiniLM-L6-v2 256-wordpiece query-passage logits, same ids",
+  "complete_evidence_coverage_pct": {
+    "dense_cosine": {
+      "2": 24.83,
+      "3": 34.17,
+      "5": 52.33,
+      "8": 81.5
+    },
+    "crossencoder": {
+      "2": 33.83,
+      "3": 44.5,
+      "5": 58.67,
+      "8": 79.33
+    },
+    "dense_graph": {
+      "2": 61.5,
+      "3": 68.33,
+      "5": 93.0,
+      "8": 98.33
+    },
+    "crossencoder_graph": {
+      "2": 62.83,
+      "3": 70.17,
+      "5": 93.17,
+      "8": 98.17
+    }
+  },
+  "crossencoder_graph_vs_crossencoder_at3": {
+    "diff_pp": 25.67,
+    "ci95_pp": [
+      22.17,
+      29.33
+    ],
+    "wins": 159,
+    "losses": 5,
+    "ties": 436
+  },
+  "dense_graph_vs_dense_at3": {
+    "diff_pp": 34.17,
+    "ci95_pp": [
+      30.0,
+      38.0
+    ],
+    "wins": 209,
+    "losses": 4,
+    "ties": 387
+  },
+  "graph_link_present_pct": 81.67,
+  "gold_support_count_distribution": {
+    "2": 459,
+    "4": 141
+  },
+  "timing": {
+    "graph_feature_extraction_and_four_rankings_ms_per_question": 0.322,
+    "graph_feature_extraction_and_four_rankings_total_s": 0.1933,
+    "pretrained_crossencoder_scoring_ms_per_question_from_original_inference_run": 254.92,
+    "cached_embedding_and_crossencoder_scores": true
+  },
+  "note": "This is an actual rerun of ranking/selection and evidence coverage from cached neural scores; scoring step was previously executed, not repeated. Scores are on the same selected 600 held-out question IDs."
+}
