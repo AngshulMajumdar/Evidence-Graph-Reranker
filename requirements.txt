@@ -1,0 +1,4 @@
+numpy>=1.23
+torch>=2.1
+sentence-transformers>=3.0
+gradio>=4.0

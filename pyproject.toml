@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evidence-graph-reranker"
+version = "0.1.0"
+description = "Training-free fixed-rule graph selection of complementary multi-hop RAG evidence"
+readme = "INSTALL.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["rag", "reranking", "multihop", "evidence", "retrieval"]
+authors = [{name = "Angshul Majumdar"}]
+dependencies = ["numpy>=1.23"]
+
+[project.optional-dependencies]
+neural = ["sentence-transformers>=3.0", "torch>=2.1"]
+demo = ["gradio>=4.0", "sentence-transformers>=3.0", "torch>=2.1"]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+evidence-graph-rerank = "evidence_graph_reranker.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["evidence_graph_reranker*"]
